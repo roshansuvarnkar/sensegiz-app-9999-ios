@@ -1,0 +1,8 @@
+{
+  "name": "social_distancing_sensegiz",
+  "integrations": {
+    "capacitor": {},
+    "cordova": {}
+  },
+  "type": "angular"
+}

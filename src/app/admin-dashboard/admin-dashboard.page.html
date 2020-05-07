@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <span class="admintool">
+      <ion-icon size="large" name="home"></ion-icon>
+      <ion-title>Dashboard</ion-title>
+      <ion-button   (click)="logout()">Logout</ion-button>
+    </span>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: none transparent;">
+<mat-tab-group mat-stretch-tabs>
+  <mat-tab label="Device Assign">
+    <div class="circle" (click)="brCodeScanner()">Scan</div>
+    <p class="center"> Tap to scan</p>
+
+    <ion-card>
+      <ion-card-header> Device details</ion-card-header>
+      <ion-card-content>
+          <form [formGroup]="deviceDetails" (ngSubmit)="submit(deviceDetails.value)">
+            <ion-item>
+              <ion-label position="stacked">Device Id</ion-label>
+              <ion-input type="number" formControlName="deviceId"></ion-input>
+
+              </ion-item>
+                <ion-item>
+                  <ion-label position="stacked">Device Name</ion-label>
+                  <ion-input type="text" formControlName="deviceName"></ion-input>
+
+                  </ion-item><br>
+                    <ion-button expand="full" type="submit">Submit</ion-button>
+          </form>
+
+      </ion-card-content>
+
+    </ion-card>
+
+  </mat-tab>
+  <mat-tab label="Assigned View">
+    <table class="table table-borderless">
+        <thead class="head">
+          <tr>
+            <th>#</th>
+            <th>Device Id</th>
+            <th>Device Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of userAssigned;let i=index">
+            <td>{{i+1}}</td>
+            <td>{{a.deviceId}}</td>
+            <td>{{a.deviceName}}</td>
+          </tr>
+        </tbody>
+    </table>
+  </mat-tab>
+</mat-tab-group>
+
+
+
+</ion-content>

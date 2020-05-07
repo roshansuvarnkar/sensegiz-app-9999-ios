@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home"></ion-back-button>
+    </ion-buttons>
+    <ion-title text-center>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<form [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)" >
+
+		<ion-item>
+			<ion-label position="floating">Username</ion-label>
+			<ion-input type="email" formControlName="username"></ion-input>
+		</ion-item>
+		<ion-item >
+			<ion-icon (click)="togglePassword()" [name]="passwordVisibility" size="large" slot="end"></ion-icon>
+			<ion-label position="floating">Password</ion-label>
+			<ion-input [type]="passwordFormat" formControlName="password">
+			</ion-input>
+
+
+		</ion-item>
+		<ion-text *ngIf="loginValidStatus" color="danger" size="small">
+			Invalid Username or Password
+		</ion-text><br>
+		<ion-button slot="start" expand="block" color="primary" type="submit">Submit</ion-button>
+	</form>
+
+</ion-content>

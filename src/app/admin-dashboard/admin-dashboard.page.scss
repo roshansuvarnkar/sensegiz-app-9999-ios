@@ -1,0 +1,32 @@
+.table {
+    text-align: center;
+}
+thead.head {
+    border-bottom: 1px solid #8080806b;
+}
+
+span.admintool {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.5rem;
+}
+.circle {
+      width: 10rem;
+      height: 10rem;
+      border-radius: 50%;
+      font-size: 30px;
+      color: #3880ff;
+      text-align: center;
+      background: #c7c7c773;
+      border: 17px solid #3880ff;
+      line-height: 8rem;
+      margin: 3rem auto;
+}
+p.center.ng-star-inserted {
+    text-align: center;
+    font-size: 1.0rem;
+    font-family: cursive;
+}
+ion-card.ng-star-inserted.md.hydrated {
+    text-align: center;
+}
