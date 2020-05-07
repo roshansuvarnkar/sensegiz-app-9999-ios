@@ -4,11 +4,22 @@
 thead.head {
     border-bottom: 1px solid #8080806b;
 }
+ion-icon {
+  font-size: 30px;
+}
 
+span ion-text.md.hydrated {
+    font-family: cursive;
+    margin-right: 2rem;
+    font-size: larger;
+}
+span.logout {
+    display: flex;
+}
 span.admintool {
     display: flex;
     justify-content: space-between;
-    padding: 0 0.5rem;
+    padding: 0 0.5rem; 
 }
 .circle {
       width: 10rem;
