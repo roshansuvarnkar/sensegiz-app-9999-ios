@@ -105,7 +105,12 @@ export class AdminDashboardPage implements OnInit {
 
    logout(){
      this.login.logout()
-     }
+   }
+
+
+   logoutUser(a){
+     console.log("user logout===",a)
+   }
 
 
 }

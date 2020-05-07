@@ -2,8 +2,14 @@
   <ion-toolbar>
     <span class="admintool">
       <ion-icon size="large" name="home"></ion-icon>
-      <ion-title>Dashboard</ion-title>
-      <ion-button   (click)="logout()">Logout</ion-button>
+      <ion-title>Dashboard
+
+      </ion-title>
+
+      <span (click)="logout()" class="logout">
+        <ion-icon name="log-out" class="headIcon"></ion-icon> &nbsp;
+        <ion-text>Logout</ion-text>
+      </span>
     </span>
   </ion-toolbar>
 </ion-header>
@@ -43,6 +49,7 @@
             <th>#</th>
             <th>Device Id</th>
             <th>Device Name</th>
+            <th>Logout</th>
           </tr>
         </thead>
         <tbody>
@@ -50,6 +57,7 @@
             <td>{{i+1}}</td>
             <td>{{a.deviceId}}</td>
             <td>{{a.deviceName}}</td>
+            <td><ion-icon name="log-out"(click)="logoutUser(a)" ></ion-icon></td>
           </tr>
         </tbody>
     </table>
