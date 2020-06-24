@@ -7,7 +7,6 @@
        </trust-anchors>
    </base-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain>localhost</domain>
-        <domain includeSubdomains="true">44.229.150.125:3000</domain>
+        <domain includeSubdomains="true">http://sd1-api.sensegiz.com:3000</domain>
     </domain-config>
 </network-security-config>

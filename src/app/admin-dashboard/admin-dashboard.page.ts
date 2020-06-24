@@ -14,6 +14,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 export class AdminDashboardPage implements OnInit {
 
   userAssigned:any=[]
+  userAssignedTemp:any=[]
   loginData:any
   scannedData:any=[]
   deviceDetails:any
@@ -31,24 +32,31 @@ export class AdminDashboardPage implements OnInit {
       deviceName:['',Validators.required],
 
     })
+  }
 
-
-
+  ngOnInit() {
+     var status = this.login.LoginStatus()
+     if(status){
+      this.loginData = this.login.getLoginData()
+      this.loginData = JSON.parse(this.loginData)
+      this.refreshUserAssigned()
+     }
+     else{
+       this.router.navigate(['/admin-login'])
+     }
    }
 
-   ngOnInit() {
-       var status = this.login.adminLoginStatus()
-       if(status){
-       }
-       else{
-         this.router.navigate(['/admin-login'])
-       }
-
-
-       this.loginData = this.login.getAdminLogin()
-       this.loginData = JSON.parse(this.loginData)
-       this.refreshUserAssigned()
+  ionViewWillEnter() {
+     var status = this.login.LoginStatus()
+     if(status){
+      this.loginData = this.login.getLoginData()
+      this.loginData = JSON.parse(this.loginData)
+      this.refreshUserAssigned()
      }
+     else{
+       this.router.navigate(['/admin-login'])
+     }
+  }
 
    returnUserId(){
      this.loginData = this.login.getAdminLogin()
@@ -65,6 +73,7 @@ export class AdminDashboardPage implements OnInit {
        console.log("res====",res)
    		if(res.status){
    			this.userAssigned=res.success
+        this.userAssignedTemp=res.success
    		}
    	})
    }
@@ -93,6 +102,7 @@ export class AdminDashboardPage implements OnInit {
        if(res.status){
          this.generalServices.toast("User updated successfully...!!!")
          this.deviceDetails.reset()
+         this.refreshUserAssigned()
        }
        else if(!res.status && res.alreadyExisted){
          this.generalServices.toast("Device already assigned, Try different device")
@@ -103,6 +113,7 @@ export class AdminDashboardPage implements OnInit {
      })
    }
 
+
    logout(){
      this.login.logout()
    }
@@ -110,7 +121,33 @@ export class AdminDashboardPage implements OnInit {
 
    logoutUser(a){
      console.log("user logout===",a)
+     var data={
+       userId:a.userId,
+       deviceId:a.deviceId
+     }
+     this.api.deviceLogout(data).then((res:any)=>{
+       console.log("res====",res)
+       if(res.status){
+         this.generalServices.toast("User logged out...!!!")
+         this.refreshUserAssigned()
+       }
+     })
    }
+
+
+
+
+  search(a){
+    console.log("search==",a)
+    if(a.length>0){
+      this.userAssigned = this.userAssignedTemp.filter(obj=>{
+        return ((obj.deviceName.toString().toLowerCase().indexOf(a)>-1) || (obj.deviceId.toString().toLowerCase().indexOf(a)>-1))
+      })
+    }
+    else{
+      this.userAssigned = this.userAssignedTemp
+    }
+  }
 
 
 }

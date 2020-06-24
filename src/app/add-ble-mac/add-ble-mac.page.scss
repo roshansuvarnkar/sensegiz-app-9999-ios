@@ -1,0 +1,30 @@
+.circle {
+      width: 10rem;
+      height: 10rem;
+      border-radius: 50%;
+      font-size: 30px;
+      color: #ef6c00;
+      text-align: center;
+      background: #f9dbce59;
+      border: 17px solid #ef6c00;
+      line-height: 8rem;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 5rem;
+      margin: auto;
+}
+p.center {
+  text-align: center;
+  margin-top: 110%;
+  font-family: cursive;
+  font-size: 1.6rem;
+}
+p.centerNot {
+    text-align: center;
+    font-size: 1.6rem;
+    margin: 50% 0;
+    font-family: cursive;
+    color: #ff2323b0;
+}

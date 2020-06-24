@@ -1,39 +1,45 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Admin Login</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+	<div class="header">
+		Sensegiz
+	</div>
 	<ion-card>
 		<ion-card-header>
-
-		<ion-card-title>Admin Login</ion-card-title>
+		<ion-card-title>Login</ion-card-title>
 		</ion-card-header>
+		<hr>
 		<ion-card-content>
-			<form [formGroup]="adminLoginForm" (ngSubmit)="login(adminLoginForm.value)" >
+			<form [formGroup]="adminLoginForm" (ngSubmit)="loginAdmin(adminLoginForm.value)" >
+				<ion-radio-group formControlName="role">
+					<ion-item lines="none">
+					  <ion-label>Admin</ion-label>
+					  <ion-radio slot="start" value="admin"></ion-radio>
+					</ion-item>
 
-		<ion-item>
-			<ion-label position="floating">Username</ion-label>
-			<ion-input type="email" formControlName="userName"></ion-input>
-		</ion-item>
-		<ion-item >
-			<ion-icon (click)="togglePassword()" [name]="passwordVisibility" size="large" slot="end"></ion-icon>
-			<ion-label position="floating">Password</ion-label>
-			<ion-input [type]="passwordFormat" formControlName="password">
-			</ion-input>
+					<ion-item lines="none">
+					  <ion-label>User</ion-label>
+					  <ion-radio slot="start" value="user"></ion-radio>
+					</ion-item>
+				</ion-radio-group>
 
+				<ion-item>
+					<ion-label position="floating">Username</ion-label>
+					<ion-input type="email" formControlName="userName"></ion-input>
+				</ion-item>
 
-		</ion-item>
-		<ion-text *ngIf="loginValidStatus" color="danger" size="small">
-			Invalid Username or Password
-		</ion-text><br>
-		<ion-button slot="start" expand="block" color="primary" type="submit">Submit</ion-button>
-	</form>
+				<ion-item >
+					<ion-icon (click)="togglePassword()" class="ion-align-self-center" [name]="passwordVisibility" size="large" slot="end"></ion-icon>
+					<ion-label position="floating">Password</ion-label>
+					<ion-input [type]="passwordFormat" formControlName="password">
+					</ion-input>
+				</ion-item>
+
+				<ion-text *ngIf="loginValidStatus" color="danger" size="small">
+					Invalid Username or Password
+				</ion-text><br>
+
+				<ion-button slot="start" [disabled]="!adminLoginForm.valid" expand="block" color="primary" type="submit">Submit</ion-button>
+
+			</form>
 		</ion-card-content>
 	</ion-card>
-
 </ion-content>

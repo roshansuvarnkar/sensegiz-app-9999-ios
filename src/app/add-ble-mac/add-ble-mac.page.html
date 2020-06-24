@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add Ble Mac</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="absolute" *ngIf="status">
+    <div class="circle" (click)="clickAddBle()">ADD</div>
+    <p class="center">Device Connected</p>
+  </div>
+  <div class="not" *ngIf="!status">
+    <p class="centerNot">Device not connected</p>
+
+  </div>
+</ion-content>

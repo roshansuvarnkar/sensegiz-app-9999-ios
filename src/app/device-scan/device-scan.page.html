@@ -1,28 +1,51 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="home"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Devices</ion-title>
+    <span class="admintool">
+      <ion-icon size="large" name="home"></ion-icon>
+      <ion-title>
+        Device Scan
+      </ion-title>
+
+      <span (click)="logout()" class="logout">
+        <ion-icon name="log-out" class="headIcon"></ion-icon> &nbsp;
+      </span>
+    </span>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content
       pullingIcon="chevron-down-circle-outline"
       pullingText="Pull to refresh"
       refreshingSpinner="circles"
       refreshingText="Refreshing...">
     </ion-refresher-content>
-  </ion-refresher>
+  </ion-refresher> -->
+<div class="disable" style="width:100%;"><img src="../assets/source.gif" alt="Description" /></div>
+<!--     <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+        <ion-button expand="block" shape="round" color="primary" (click)="stopScan()">Stop Scan</ion-button>
+
+        </ion-fab> -->
+<span class="head">{{scanStatus}}</span>
+<span class="head">{{connectStatus}}</span>
+  <!-- <ion-fab vertical="bottom" activated="true" horizontal="end" slot="fixed" (click)="stopScan()">
+    <ion-fab-button>
+      <ion-icon name="close" ></ion-icon>
+    </ion-fab-button>
+  </ion-fab> -->
 
 
-  <div *ngIf="status">
+<!--   <div *ngIf="status">
     <ion-list >
       <ion-item *ngFor="let a of devices;let i=index">
-        {{a.name}}
+        <ion-label (click)="connectBleDeviceWriteTime(a.id)">
+          {{a.name}}
+        </ion-label>
+        <ion-label (click)="connectBleDevice(a.id)">
+          {{a.id}}
+        </ion-label>
       </ion-item>
     </ion-list>
-  </div>
+  </div> -->
 </ion-content>

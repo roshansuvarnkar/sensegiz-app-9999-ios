@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Scan devices</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button ></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <div *ngIf="status">
+    <ion-list>
+      <ion-item *ngFor="let a of devices;let i=index" (click)="clickDevice(a)">
+        <ion-label >
+          {{a.name}}
+        </ion-label>
+        <ion-label >
+          {{a.id}}
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

@@ -24,3 +24,16 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+
+
+.mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+    background-color: #ef6c00;
+}
+ion-icon {
+    color: #ef6c00c4;
+}
+table.table.table-borderless.ng-star-inserted {
+    font-family: serif;
+    letter-spacing: 1px;
+}

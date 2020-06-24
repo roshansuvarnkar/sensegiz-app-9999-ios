@@ -15,10 +15,4 @@ export class HomePage {
   private router:Router) {
   }
 
-
-logout(){
-  localStorage.clear()
-}
-
-
 }

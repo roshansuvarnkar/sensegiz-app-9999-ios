@@ -18,7 +18,9 @@ export class ApiService {
     return new Promise((resolve,reject)=>{
     	this.http.post(url,data,httpOptions).subscribe(res=>{
     		resolve(res)
-    	})
+    	},err=>{
+        reject(err)
+      })
     })
 
   }
@@ -36,7 +38,9 @@ export class ApiService {
     return new Promise((resolve,reject)=>{
     	this.http.post(url,data,httpOptions).subscribe(res=>{
     		resolve(res)
-    	})
+    	},err=>{
+        reject(err)
+      })
     })
 
   }
@@ -53,9 +57,111 @@ export class ApiService {
     return new Promise((resolve,reject)=>{
     	this.http.post(url,data,httpOptions).subscribe(res=>{
     		resolve(res)
-    	})
+    	},err=>{
+        reject(err)
+      })
     })
 
+  }
+
+
+
+
+  deviceLogout(data){
+  	const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+    var url = this.host + '/appDeviceLogout'
+
+    return new Promise((resolve,reject)=>{
+    	this.http.post(url,data,httpOptions).subscribe(res=>{
+    		resolve(res)
+    	},err=>{
+        reject(err)
+      })
+    })
+
+  }
+
+
+
+   SendData(data){
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+    var url = this.host + '/dataCollection'
+
+    return new Promise((resolve,reject)=>{
+      this.http.post(url,data,httpOptions).subscribe(res=>{
+        resolve(res)
+      },err=>{
+        reject(err)
+      })
+    })
+
+  }
+
+   getOnOffTime(data){
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+    var url = this.host + '/appOnOffTime'
+
+    return new Promise((resolve,reject)=>{
+      this.http.post(url,data,httpOptions).subscribe(res=>{
+        resolve(res)
+      },err=>{
+        reject(err)
+      })
+    })
+  }
+
+
+   getRssi(data){
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+    var url = this.host + '/appGetRssi'
+
+    return new Promise((resolve,reject)=>{
+      this.http.post(url,data,httpOptions).subscribe(res=>{
+        resolve(res)
+      },err=>{
+        reject(err)
+      })
+    })
+  }
+
+
+   addBleMac(data){
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+    var url = this.host + '/appBleUpdate'
+
+    return new Promise((resolve,reject)=>{
+      this.http.post(url,data,httpOptions).subscribe(res=>{
+        resolve(res)
+      },err=>{
+        reject(err)
+      })
+    })
+  }
+
+
+   validateMac(data){
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+    var url = this.host + '/appBleValidate'
+
+    return new Promise((resolve,reject)=>{
+      this.http.post(url,data,httpOptions).subscribe(res=>{
+        resolve(res)
+      },err=>{
+        reject(err)
+      })
+    })
   }
 
 

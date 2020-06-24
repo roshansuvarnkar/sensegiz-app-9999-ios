@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup,Validators,FormBuilder } from '@angular/forms';
 import { ApiService } from '../api.service';
 import {Router} from '@angular/router'
+import { LoginStatusService } from '../login-status.service';
 
 @Component({
   selector: 'app-login',
@@ -18,11 +19,12 @@ passwordVisibility : string = 'eye-off';
   constructor(
   private fb:FormBuilder,
   private api:ApiService,
-  private router:Router
+  private router:Router,
+  private login:LoginStatusService
   ) {
 
   	this.loginForm=this.fb.group({
-  	username:['',Validators.required],
+  	userName:['',Validators.required],
   	password:['',Validators.required],
 
 
@@ -30,20 +32,35 @@ passwordVisibility : string = 'eye-off';
 
    }
 
-ngOnInit()
+  ngOnInit()
    {
+     var status = this.login.LoginStatus()
+     if(status){
+       this.router.navigate(['/device-scan'])
+     }
+     else{
+     }
+  }
 
-  	}
 
-login(data){
+  ionViewWillEnter(){
+    var status = this.login.LoginStatus()
+    if(status){
+     this.router.navigate(['/device-scan'])
+    }
+    else{
+    }
+  }
+
+loginUser(data){
 	if(this.loginForm.valid){
 		//console.log("Successful",data)
-		data.system='mobile'
+		data.system='user'
 		this.api.send(data).then((res:any)=>{
-			console.log("data login success",res)
+			//console.log("data login success",res)
 			if(res.status){
-				localStorage.setItem('sensegizLogin',JSON.stringify(res[0]))
-				this.router.navigate(['/home'])
+				localStorage.setItem('sensegizUserLogin',JSON.stringify(res.success))
+				this.router.navigate(['/device-scan'])
 			}
 			else{
 				this.loginValidStatus = true;

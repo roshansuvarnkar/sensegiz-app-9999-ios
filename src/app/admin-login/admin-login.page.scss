@@ -2,5 +2,29 @@ ion-card-header.ion-inherit-color.md.hydrated {
     text-align: center;
 }
 ion-card.md.hydrated {
-    margin-top: 30%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    max-height: 24rem;
+    margin: auto 1rem;
+    box-shadow: 0 2px 8px 0 #ef6c00 !important;
+}
+ion-radio-group.md.hydrated {
+    display: flex;
+    justify-content: space-between;
+}
+hr {
+    background-color: #f7b680;
+    width: 10rem;
+}
+.header {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 1.3rem;
+    font-family: serif;
+    letter-spacing: 1px;
+    color: #ec8530;
+    font-weight: 400;
 }

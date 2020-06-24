@@ -3,16 +3,22 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="home"></ion-back-button>
     </ion-buttons>
-    <ion-title text-center>Login</ion-title>
+    <ion-title>User Login</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-	<form [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)" >
+	<ion-card>
+		<ion-card-header>
+
+		<ion-card-title>User Login</ion-card-title>
+		</ion-card-header>
+		<ion-card-content>
+			<form [formGroup]="loginForm" (ngSubmit)="loginUser(loginForm.value)" >
 
 		<ion-item>
 			<ion-label position="floating">Username</ion-label>
-			<ion-input type="email" formControlName="username"></ion-input>
+			<ion-input type="email" formControlName="userName"></ion-input>
 		</ion-item>
 		<ion-item >
 			<ion-icon (click)="togglePassword()" [name]="passwordVisibility" size="large" slot="end"></ion-icon>
@@ -25,7 +31,9 @@
 		<ion-text *ngIf="loginValidStatus" color="danger" size="small">
 			Invalid Username or Password
 		</ion-text><br>
-		<ion-button slot="start" expand="block" color="primary" type="submit">Submit</ion-button>
+		<ion-button slot="start" expand="block" [disabled]="!loginForm.valid" color="primary" type="submit">Submit</ion-button>
 	</form>
+		</ion-card-content>
+	</ion-card>
 
 </ion-content>

@@ -19,17 +19,17 @@ span.logout {
 span.admintool {
     display: flex;
     justify-content: space-between;
-    padding: 0 0.5rem; 
+    padding: 0 0.5rem;
 }
 .circle {
       width: 10rem;
       height: 10rem;
       border-radius: 50%;
       font-size: 30px;
-      color: #3880ff;
+      color: #ef6c00;
       text-align: center;
-      background: #c7c7c773;
-      border: 17px solid #3880ff;
+      background: #f9dbce59;
+      border: 17px solid #ef6c00;
       line-height: 8rem;
       margin: 3rem auto;
 }
@@ -40,4 +40,19 @@ p.center.ng-star-inserted {
 }
 ion-card.ng-star-inserted.md.hydrated {
     text-align: center;
+}
+ion-card-header.ion-inherit-color.md.hydrated {
+    color: #ef6c00;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+ion-title.md.title-default.hydrated {
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    font-family: serif;
+}
+.search {
+    width: 16rem;
+    margin: 0.3rem auto;
 }

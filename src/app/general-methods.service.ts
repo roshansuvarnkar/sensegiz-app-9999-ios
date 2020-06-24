@@ -1,12 +1,30 @@
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
+import { Network } from '@ionic-native/network/ngx';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeneralMethodsService {
-
-  constructor(private toastctrl:ToastController) { }
+  myDate:any
+  toDate:any
+  dataBackUp:any=[]
+  constructor(private toastctrl:ToastController,private network: Network,private api:ApiService) {
+    let connectSubscription = this.network.onConnect().subscribe(() => {
+      console.log('network connected!');
+      if(this.dataBackUp.length>0){
+        for(var i=0 ; i<this.dataBackUp.length ; i++){
+          this.api.SendData(this.dataBackUp[i]).then((apis:any)=>{
+            if(apis.status){
+              console.log("backup data sync",this.dataBackUp[i])
+              this.dataBackUp.splice(i, 1);
+            }
+          })
+        }
+      }
+    });
+  }
 
 
   async toast(msg){
@@ -16,8 +34,33 @@ export class GeneralMethodsService {
       position: 'bottom',
     });
   		toast.present();
-
   		setTimeout(function(){ toast.dismiss() }, 3000);
+  }
+
+
+  checkNetwork(){
+    console.log("connection type===",this.network.type);
+    return this.network.type;
+  }
+
+
+
+  timeBle(){
+    this.myDate = new Date();
+    this.myDate = this.myDate.getUTCHours() + ':' + this.myDate.getUTCMinutes() + ':' + this.myDate.getUTCSeconds()
+    this.toDate = this.myDate.split(':')
+    if(this.toDate[0].length==1){
+      this.toDate[0]='0'+this.toDate[0]
+    }
+    if(this.toDate[1].length==1){
+      this.toDate[1]='0'+this.toDate[1]
+    }
+    if(this.toDate[2].length==1){
+      this.toDate[2]='0'+this.toDate[2]
+    }
+    this.myDate = '00' + this.toDate[0] + this.toDate[1] + this.toDate[2] +'00'
+    console.log("date====",this.myDate)
+    return this.myDate
   }
 
 }
