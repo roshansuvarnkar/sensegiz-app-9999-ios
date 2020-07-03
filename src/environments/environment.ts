@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  apiHost:'http://sd1-api.sensegiz.com:3000',
+  apiHost:'http://35.167.156.24:3000',
   production: false
 };
 

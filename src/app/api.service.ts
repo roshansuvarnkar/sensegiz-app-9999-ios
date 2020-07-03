@@ -7,13 +7,14 @@ import { environment } from '../environments/environment'
 })
 export class ApiService {
   localHost :any = localStorage.getItem('sensegizapi')
-  host:String= this.localHost == undefined  ? 'http://sd1-api.sensegiz.com:3000' : this.localHost =='undefined:3000' ? 'http://sd1-api.sensegiz.com:3000' : this.localHost ==null ? 'http://sd1-api.sensegiz.com:3000' :this.localHost
+  host:String= environment.apiHost
+  //this.localHost == undefined  ? 'http://sd1-api.sensegiz.com:3000' : this.localHost =='undefined:3000' ? 'http://sd1-api.sensegiz.com:3000' : this.localHost ==null ? 'http://sd1-api.sensegiz.com:3000' :this.localHost
 
   constructor(private http:HttpClient) { }
 
   getUrlHost(){
     this.localHost = localStorage.getItem('sensegizapi')
-    this.host = this.localHost == undefined  ? 'http://sd1-api.sensegiz.com:3000' : this.localHost =='undefined:3000' ? 'http://sd1-api.sensegiz.com:3000' : this.localHost ==null ? 'http://sd1-api.sensegiz.com:3000' :this.localHost
+    this.host= this.localHost == undefined  ? 'http://sd1-api.sensegiz.com:3000' : this.localHost =='undefined:3000' ? 'http://sd1-api.sensegiz.com:3000' : this.localHost ==null ? 'http://sd1-api.sensegiz.com:3000' :this.localHost
     return this.host
   }
 
@@ -23,7 +24,7 @@ export class ApiService {
   	const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    var url = this.getUrlHost() + '/login'
+    var url = this.host + '/login'
 
     return new Promise((resolve,reject)=>{
     	this.http.post(url,data,httpOptions).subscribe(res=>{
@@ -43,7 +44,7 @@ export class ApiService {
   	const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    var url = this.getUrlHost() + '/appAdminAssignView'
+    var url = this.host + '/appAdminAssignView'
 
     return new Promise((resolve,reject)=>{
     	this.http.post(url,data,httpOptions).subscribe(res=>{
@@ -62,7 +63,7 @@ export class ApiService {
   	const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    var url = this.getUrlHost() + '/appAssignUser'
+    var url = this.host + '/appAssignUser'
 
     return new Promise((resolve,reject)=>{
     	this.http.post(url,data,httpOptions).subscribe(res=>{
@@ -81,7 +82,7 @@ export class ApiService {
   	const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    var url = this.getUrlHost() + '/appDeviceLogout'
+    var url = this.host + '/appDeviceLogout'
 
     return new Promise((resolve,reject)=>{
     	this.http.post(url,data,httpOptions).subscribe(res=>{
@@ -99,7 +100,7 @@ export class ApiService {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    var url = this.getUrlHost() + '/dataCollection'
+    var url = this.host + '/dataCollection'
 
     return new Promise((resolve,reject)=>{
       this.http.post(url,data,httpOptions).subscribe(res=>{
@@ -115,7 +116,7 @@ export class ApiService {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    var url = this.getUrlHost() + '/appOnOffTime'
+    var url = this.host + '/appOnOffTime'
 
     return new Promise((resolve,reject)=>{
       this.http.post(url,data,httpOptions).subscribe(res=>{
@@ -131,7 +132,7 @@ export class ApiService {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    var url = this.getUrlHost() + '/appGetRssi'
+    var url = this.host + '/appGetRssi'
 
     return new Promise((resolve,reject)=>{
       this.http.post(url,data,httpOptions).subscribe(res=>{
@@ -147,7 +148,7 @@ export class ApiService {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    var url = this.getUrlHost() + '/appBleUpdate'
+    var url = this.host + '/appBleUpdate'
 
     return new Promise((resolve,reject)=>{
       this.http.post(url,data,httpOptions).subscribe(res=>{
@@ -163,7 +164,7 @@ export class ApiService {
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
-    var url = this.getUrlHost() + '/appBleValidate'
+    var url = this.host + '/appBleValidate'
 
     return new Promise((resolve,reject)=>{
       this.http.post(url,data,httpOptions).subscribe(res=>{

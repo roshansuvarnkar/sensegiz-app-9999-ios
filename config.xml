@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.sensegiz.socialdistancing" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>SenseGiz Social Distancing</name>
-    <description>An SenseGiz social distancing app.</description>
+<widget id="com.sensegiz.people" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>SenseGiz</name>
+    <description>An SenseGiz app.</description>
     <author email="info@sensegiz.com" href="http://sensegiz.com">Roshan and Team</author>
     <content src="index.html" />
     <access origin="*" />

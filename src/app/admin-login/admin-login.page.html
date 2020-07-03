@@ -9,14 +9,14 @@
 		<hr>
 		<ion-card-content>
 
-			<ion-item>
+			<!-- <ion-item>
 				<ion-label>Server</ion-label>
 				<ion-select value="brown" okText="Done" cancelText="Dismiss" (ionChange)="onSelectChange($event)">
 					<span *ngFor="let a of servers">
 						<ion-select-option [value]="a.serverId">{{a.serverName}}</ion-select-option>
 					</span>
 				</ion-select>
-			</ion-item>
+			</ion-item> -->
 			<br>
 			<form [formGroup]="adminLoginForm" (ngSubmit)="loginAdmin(adminLoginForm.value)" *ngIf="serverSelected!=undefined">
 				<ion-radio-group formControlName="role">

@@ -114,11 +114,11 @@ togglePassword(){
 
 refreshServer(){
   var data = {}
-  this.api.getServers(data).then((res:any)=>{
-    if(res.status){
-      this.servers = res.success
-    }
-  })
+  // this.api.getServers(data).then((res:any)=>{
+  //   if(res.status){
+  //     this.servers = res.success
+  //   }
+  // })
 }
 
 onSelectChange(selectedValue: any) {
