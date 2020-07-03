@@ -18,7 +18,8 @@
 				</ion-select>
 			</ion-item> -->
 			<br>
-			<form [formGroup]="adminLoginForm" (ngSubmit)="loginAdmin(adminLoginForm.value)" *ngIf="serverSelected!=undefined">
+			<!-- *ngIf="serverSelected!=undefined" -->
+			<form [formGroup]="adminLoginForm" (ngSubmit)="loginAdmin(adminLoginForm.value)" >
 				<ion-radio-group formControlName="role">
 					<ion-item lines="none">
 					  <ion-label>Admin</ion-label>
