@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { StatusBar } from '@ionic-native/status-bar';
 import { Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { SplashScreen } from '@ionic-native/splash-screen';
 import { LoginStatusService } from './login-status.service';
 import {Router} from '@angular/router'
 import { MenuController } from '@ionic/angular';

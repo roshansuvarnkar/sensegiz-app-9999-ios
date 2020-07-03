@@ -3,20 +3,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy,MenuController  } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
-import { BLE } from '@ionic-native/ble/ngx';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import { BackgroundMode } from '@ionic-native/background-mode/ngx';
-import { Network } from '@ionic-native/network/ngx';
-import { ForegroundService } from '@ionic-native/foreground-service/ngx';
+import { BLE } from '@ionic-native/ble';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
+import { Network } from '@ionic-native/network';
 import { MaterialModule } from './material/material.module';
-
+import { Diagnostic } from '@ionic-native/diagnostic';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -27,18 +25,16 @@ import { MaterialModule } from './material/material.module';
       BrowserAnimationsModule,
       ReactiveFormsModule,
       HttpClientModule,
-      MaterialModule
+      MaterialModule,
     ],
   providers: [
     MenuController,
-
     StatusBar,
     SplashScreen,
     BarcodeScanner,
     BLE,
-    BackgroundMode,
     Network,
-    ForegroundService,
+    Diagnostic,
      { provide: RouteReuseStrategy,
        useClass: IonicRouteStrategy }
   ],

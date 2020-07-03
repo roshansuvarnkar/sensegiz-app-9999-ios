@@ -4,7 +4,7 @@ import { GeneralMethodsService } from '../general-methods.service';
 import { LoginStatusService } from '../login-status.service';
 import {Router} from '@angular/router';
 import { FormGroup,Validators,FormBuilder } from '@angular/forms';
-import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 @Component({
   selector: 'app-admin-dashboard',

@@ -1,9 +1,11 @@
 import { Component, OnInit,ChangeDetectorRef } from '@angular/core';
-import { BLE } from '@ionic-native/ble/ngx';
+import { BLE } from '@ionic-native/ble';
 import {Router,ActivatedRoute} from '@angular/router'
 import { LoginStatusService } from '../login-status.service';
 import { ApiService } from '../api.service';
 import { GeneralMethodsService } from '../general-methods.service';
+import { Diagnostic } from '@ionic-native/diagnostic';
+
 @Component({
   selector: 'app-add-ble-mac',
   templateUrl: './add-ble-mac.page.html',
@@ -21,7 +23,8 @@ export class AddBleMacPage implements OnInit {
     private login:LoginStatusService,
     private api: ApiService,
     private general:GeneralMethodsService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private diagnostic: Diagnostic
   ) {
   }
 
@@ -38,7 +41,30 @@ export class AddBleMacPage implements OnInit {
     this.route.queryParams.subscribe(params => {
         this.deviceData = JSON.parse(params.record) ;
         console.log("records=",this.deviceData)
-        this.connect(this.deviceData.id)
+        this.diagnostic.isBluetoothEnabled().then((resBle:any)=>{
+          if(resBle){
+            this.diagnostic.isLocationEnabled().then((resLoc:any)=>{
+              if(resLoc){
+                this.connect(this.deviceData.id)
+              }
+              else{
+                if(confirm("Turn ON location")){
+                    this.diagnostic.switchToLocationSettings()
+                    console.log("back from location")
+                }
+              }
+            })
+          }
+          else{
+            if(confirm("Turn ON bluetooth")){
+                this.diagnostic.switchToBluetoothSettings()
+                console.log("back from bluetooth")
+            }
+            else{
+
+            }
+          }
+        })
     })
   }
 
@@ -89,7 +115,7 @@ export class AddBleMacPage implements OnInit {
        },2000)
     }).catch(err=>{
       console.log("err http==",err)
-    }) 
+    })
   }
 
 }

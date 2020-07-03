@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs'
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ public setTime = new Subject<any>()
 
 
   constructor(
-    private router:Router
+    private router:Router,
+    private api:ApiService
   ){
      // var a = setInterval(() => {
      //    this.battleInit();

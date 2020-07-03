@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { AdminLoginPageRoutingModule } from './admin-login-routing.module';
 
 import { AdminLoginPage } from './admin-login.page';
+import { MaterialModule } from '../material/material.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { AdminLoginPage } from './admin-login.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
+    MaterialModule,
     AdminLoginPageRoutingModule
   ],
   declarations: [AdminLoginPage]

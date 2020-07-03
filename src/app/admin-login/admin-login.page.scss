@@ -7,7 +7,7 @@ ion-card.md.hydrated {
     right: 0;
     top: 0;
     bottom: 0;
-    max-height: 24rem;
+    max-height: 26rem;
     margin: auto 1rem;
     box-shadow: 0 2px 8px 0 #ef6c00 !important;
 }
@@ -27,4 +27,10 @@ hr {
     letter-spacing: 1px;
     color: #ec8530;
     font-weight: 400;
+}
+ion-card-content.md.card-content-md.hydrated {
+    margin-top: -1rem;
+}
+ion-select.md.in-item.hydrated {
+    max-width: 100% !important;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Network } from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -11,6 +11,7 @@ export class GeneralMethodsService {
   toDate:any
   dataBackUp:any=[]
   constructor(private toastctrl:ToastController,private network: Network,private api:ApiService) {
+    this.locationAutorize()
     let connectSubscription = this.network.onConnect().subscribe(() => {
       console.log('network connected!');
       if(this.dataBackUp.length>0){
@@ -62,5 +63,21 @@ export class GeneralMethodsService {
     console.log("date====",this.myDate)
     return this.myDate
   }
+
+
+
+  locationAutorize(){
+    // this.diagnostic.isLocationAuthorized().then((res:any)=>{
+    //   console.log("res location authorize",res);
+    //
+    //   if(res == 'GRANTED'){
+    //
+    //   }
+    //   else{
+    //
+    //   }
+    // })
+  }
+
 
 }

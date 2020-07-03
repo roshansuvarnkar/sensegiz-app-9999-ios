@@ -8,7 +8,17 @@
 		</ion-card-header>
 		<hr>
 		<ion-card-content>
-			<form [formGroup]="adminLoginForm" (ngSubmit)="loginAdmin(adminLoginForm.value)" >
+
+			<ion-item>
+				<ion-label>Server</ion-label>
+				<ion-select value="brown" okText="Done" cancelText="Dismiss" (ionChange)="onSelectChange($event)">
+					<span *ngFor="let a of servers">
+						<ion-select-option [value]="a.serverId">{{a.serverName}}</ion-select-option>
+					</span>
+				</ion-select>
+			</ion-item>
+			<br>
+			<form [formGroup]="adminLoginForm" (ngSubmit)="loginAdmin(adminLoginForm.value)" *ngIf="serverSelected!=undefined">
 				<ion-radio-group formControlName="role">
 					<ion-item lines="none">
 					  <ion-label>Admin</ion-label>

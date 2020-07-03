@@ -3,6 +3,7 @@ import { FormGroup,Validators,FormBuilder } from '@angular/forms';
 import { ApiService } from '../api.service';
 import {Router} from '@angular/router'
 import { LoginStatusService } from '../login-status.service';
+import { GeneralMethodsService } from '../general-methods.service';
 
 @Component({
   selector: 'app-admin-login',
@@ -10,22 +11,25 @@ import { LoginStatusService } from '../login-status.service';
   styleUrls: ['./admin-login.page.scss'],
 })
 export class AdminLoginPage implements OnInit {
-adminLoginForm : any;
-loginData : any;
-loginValidStatus : boolean = false;
-passwordFormat : string = 'password';
-passwordVisibility : string = 'eye-off';
+  servers:any=[]
+  serverSelected:any=undefined
+  adminLoginForm : any;
+  loginData : any;
+  loginValidStatus : boolean = false;
+  passwordFormat : string = 'password';
+  passwordVisibility : string = 'eye-off';
   constructor(
   private fb:FormBuilder,
   private api:ApiService,
   private router:Router,
-  private login:LoginStatusService
+  private login:LoginStatusService,
+  private general:GeneralMethodsService
   ) {
   	this.adminLoginForm=this.fb.group({
     	userName:['',Validators.required],
     	password:['',Validators.required],
       role:['',Validators.required],
-    }); 
+    });
 
   }
 
@@ -44,10 +48,11 @@ passwordVisibility : string = 'eye-off';
       }
     }
     else{
+      this.refreshServer()
     }
   }
 
-  
+
   ionViewWillEnter() {
     var status = this.login.LoginStatus()
     if(status){
@@ -107,6 +112,20 @@ togglePassword(){
 }
 
 
-
+refreshServer(){
+  var data = {}
+  this.api.getServers(data).then((res:any)=>{
+    if(res.status){
+      this.servers = res.success
+    }
+  })
 }
 
+onSelectChange(selectedValue: any) {
+    console.log('Selected==', selectedValue.detail.value);
+    this.serverSelected = selectedValue.detail.value
+    localStorage.setItem('sensegizapi',selectedValue.detail.value+':3000')
+}
+
+
+}
