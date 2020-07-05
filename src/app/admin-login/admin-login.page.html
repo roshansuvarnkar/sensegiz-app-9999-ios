@@ -9,46 +9,46 @@
 		<hr>
 		<ion-card-content>
 
-			<!-- <ion-item>
-				<ion-label>Server</ion-label>
-				<ion-select value="brown" okText="Done" cancelText="Dismiss" (ionChange)="onSelectChange($event)">
-					<span *ngFor="let a of servers">
-						<ion-select-option [value]="a.serverId">{{a.serverName}}</ion-select-option>
-					</span>
-				</ion-select>
-			</ion-item> -->
-			<br>
-			<!-- *ngIf="serverSelected!=undefined" -->
 			<form [formGroup]="adminLoginForm" (ngSubmit)="loginAdmin(adminLoginForm.value)" >
-				<ion-radio-group formControlName="role">
-					<ion-item lines="none">
-					  <ion-label>Admin</ion-label>
-					  <ion-radio slot="start" value="admin"></ion-radio>
-					</ion-item>
-
-					<ion-item lines="none">
-					  <ion-label>User</ion-label>
-					  <ion-radio slot="start" value="user"></ion-radio>
-					</ion-item>
-				</ion-radio-group>
-
 				<ion-item>
-					<ion-label position="floating">Username</ion-label>
-					<ion-input type="email" formControlName="userName"></ion-input>
-				</ion-item>
+					 <ion-label>Server</ion-label>
+					 <ion-select placeholder="Select server" formControlName="server" (ionChange)="onSelectChange($event)">
+						 <ion-select-option *ngFor="let a of servers" [value]="a.serverId">{{a.serverName}}</ion-select-option>
+					 </ion-select>
+				 </ion-item>
+				<br>
+				<div class="" *ngIf="serverSelected!==undefined && serverSelected!==''">
 
-				<ion-item >
-					<ion-icon (click)="togglePassword()" class="ion-align-self-center" [name]="passwordVisibility" size="large" slot="end"></ion-icon>
-					<ion-label position="floating">Password</ion-label>
-					<ion-input [type]="passwordFormat" formControlName="password">
-					</ion-input>
-				</ion-item>
+					<ion-radio-group formControlName="role">
+						<ion-item lines="none">
+							<ion-label>Admin</ion-label>
+							<ion-radio slot="start" value="admin"></ion-radio>
+						</ion-item>
 
-				<ion-text *ngIf="loginValidStatus" color="danger" size="small">
-					Invalid Username or Password
-				</ion-text><br>
+						<ion-item lines="none">
+							<ion-label>User</ion-label>
+							<ion-radio slot="start" value="user"></ion-radio>
+						</ion-item>
+					</ion-radio-group>
 
-				<ion-button slot="start" [disabled]="!adminLoginForm.valid" expand="block" color="primary" type="submit">Submit</ion-button>
+					<ion-item>
+						<ion-label position="floating">Username</ion-label>
+						<ion-input type="email" formControlName="userName"></ion-input>
+					</ion-item>
+
+					<ion-item >
+						<ion-icon (click)="togglePassword()" class="ion-align-self-center" [name]="passwordVisibility" size="large" slot="end"></ion-icon>
+						<ion-label position="floating">Password</ion-label>
+						<ion-input [type]="passwordFormat" formControlName="password">
+						</ion-input>
+					</ion-item>
+
+					<ion-text *ngIf="loginValidStatus" color="danger" size="small">
+						Invalid Username or Password
+					</ion-text><br>
+
+					<ion-button slot="start" [disabled]="!adminLoginForm.valid" expand="block" color="primary" type="submit">Submit</ion-button>
+				</div>
 
 			</form>
 		</ion-card-content>

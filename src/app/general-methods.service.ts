@@ -7,6 +7,7 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class GeneralMethodsService {
+  networkStatus:boolean
   myDate:any
   toDate:any
   dataBackUp:any=[]
@@ -14,6 +15,7 @@ export class GeneralMethodsService {
     this.locationAutorize()
     let connectSubscription = this.network.onConnect().subscribe(() => {
       console.log('network connected!');
+      this.networkStatus=true
       if(this.dataBackUp.length>0){
         for(var i=0 ; i<this.dataBackUp.length ; i++){
           this.api.SendData(this.dataBackUp[i]).then((apis:any)=>{
@@ -24,6 +26,11 @@ export class GeneralMethodsService {
           })
         }
       }
+    });
+    let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      console.log('network disconnected!');
+
+      this.networkStatus=false
     });
   }
 

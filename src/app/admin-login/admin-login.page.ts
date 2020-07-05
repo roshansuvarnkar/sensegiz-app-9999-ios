@@ -12,6 +12,7 @@ import { GeneralMethodsService } from '../general-methods.service';
 })
 export class AdminLoginPage implements OnInit {
   servers:any=[]
+  server:any=undefined
   serverSelected:any=undefined
   adminLoginForm : any;
   loginData : any;
@@ -26,6 +27,7 @@ export class AdminLoginPage implements OnInit {
   private general:GeneralMethodsService
   ) {
   	this.adminLoginForm=this.fb.group({
+    	server:['',Validators.required],
     	userName:['',Validators.required],
     	password:['',Validators.required],
       role:['',Validators.required],
@@ -35,7 +37,7 @@ export class AdminLoginPage implements OnInit {
 
   ngOnInit() {
     console.log("init enter")
-
+    this.serverSelected=undefined
     var status = this.login.LoginStatus()
     if(status){
       this.loginData = this.login.getLoginData()
@@ -48,13 +50,14 @@ export class AdminLoginPage implements OnInit {
       }
     }
     else{
-      this.refreshServer()
+      // this.refreshServer()
     }
   }
 
 
   ionViewWillEnter() {
     var status = this.login.LoginStatus()
+    this.serverSelected=undefined
     if(status){
       this.loginData = this.login.getLoginData()
       this.loginData = JSON.parse(this.loginData)
@@ -67,6 +70,8 @@ export class AdminLoginPage implements OnInit {
 
     }
     else{
+      this.refreshServer()
+
     }
   }
 
@@ -93,6 +98,10 @@ loginAdmin(data){
         else{
           this.router.navigate(['/device-scan'])
         }
+        this.adminLoginForm.reset()
+        this.serverSelected=undefined
+        this.login.loginCheckStatus.next({login:true})
+
 			}
 			else{
         this.router.navigate(['/admin-login'])
@@ -114,17 +123,23 @@ togglePassword(){
 
 refreshServer(){
   var data = {}
-  // this.api.getServers(data).then((res:any)=>{
-  //   if(res.status){
-  //     this.servers = res.success
-  //   }
-  // })
+  this.api.getServers(data).then((res:any)=>{
+    if(res.status){
+      console.log("servers==",res)
+      this.servers = res.success
+    }
+  })
 }
 
 onSelectChange(selectedValue: any) {
+  if(selectedValue.detail.value != ''){
     console.log('Selected==', selectedValue.detail.value);
-    this.serverSelected = selectedValue.detail.value
+    this.serverSelected=undefined
     localStorage.setItem('sensegizapi',selectedValue.detail.value+':3000')
+    setTimeout(()=>{
+      this.serverSelected = selectedValue.detail.value
+    },2000)
+  }
 }
 
 

@@ -13,6 +13,8 @@ import { MenuController } from '@ionic/angular';
 })
 export class AppComponent {
   onPauseSubscription:any
+  loginData:any=''
+  menuStatus:any = false
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -22,6 +24,12 @@ export class AppComponent {
     private menu: MenuController
   ) {
     this.initializeApp();
+    this.loginData = this.login.getAdminLogin()
+    this.loginData = JSON.parse(this.loginData)
+    this.menuStatus = this.login.loginCheckStatus.subscribe((res:any)=>{
+      this.loginData = this.login.getAdminLogin()
+      this.loginData = JSON.parse(this.loginData)
+    })
   }
 
   initializeApp() {
@@ -53,5 +61,7 @@ export class AppComponent {
 
   logout(){
     this.login.logout()
+    this.closeMenu()
+    this.login.loginCheckStatus.next({login:false})
   }
 }

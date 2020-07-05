@@ -9,7 +9,7 @@ import { ApiService } from './api.service';
 export class LoginStatusService {
 
 public setTime = new Subject<any>()
-
+public loginCheckStatus = new Subject<any>()
 
 
   constructor(
@@ -51,7 +51,6 @@ battleInit(){
 
   getLoginData(){
     var status = localStorage.getItem('sensegizLogin')
-    console.log("login==",status)
     if(status){
       return status
     }
@@ -63,7 +62,6 @@ battleInit(){
 
   getAdminLogin(){
     var status = localStorage.getItem('sensegizLogin')
-    console.log("login==",status)
     if(status){
       return status
     }

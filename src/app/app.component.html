@@ -1,25 +1,30 @@
-<ion-menu side="start"  swipe-gesture="true" contentId="main" auto-hide="false">
-  <ion-header>
-    <ion-toolbar color="primary">
-      <p class="logTitle">
-        Admin Login
-      </p>
-      <p class="log">
-        <mat-icon >person</mat-icon>&nbsp;
-        info@sensegiz.com
-        &nbsp;&nbsp;&nbsp;&nbsp;<ion-icon name="log-out" class="headIcon" (click)="logout()"></ion-icon>
 
-      </p>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content>
-    <ion-list>
-      <ion-item routerLink="/admin-dashboard" (click)="closeMenu()"><mat-icon >home</mat-icon>&nbsp;&nbsp;&nbsp; Home</ion-item>
-      <ion-item routerLink="/scan-ble-mac" (click)="closeMenu()"><mat-icon >read_more</mat-icon>&nbsp;&nbsp;&nbsp; Add BLE MAC</ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu>
+<div *ngIf="loginData!=false">
+  <ion-menu side="start"  swipe-gesture="true" contentId="main" auto-hide="false" >
+    <ion-header>
+      <ion-toolbar color="primary">
+        <p class="logTitle">
+          Admin Login
+        </p>
+        <p class="log">
+          <mat-icon >person</mat-icon>&nbsp;
+          {{loginData?.userName}}
+          &nbsp;&nbsp;&nbsp;&nbsp;<ion-icon name="log-out" class="headIcon" (click)="logout()"></ion-icon>
 
+        </p>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item routerLink="/admin-dashboard" (click)="closeMenu()"><mat-icon >home</mat-icon>&nbsp;&nbsp;&nbsp; Home</ion-item>
+        <ion-item routerLink="/scan-ble-mac" (click)="closeMenu()"><mat-icon >read_more</mat-icon>&nbsp;&nbsp;&nbsp; Add BLE MAC</ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
 
+  <ion-router-outlet id="main"></ion-router-outlet>
+</div>
 
-<ion-router-outlet id="main"></ion-router-outlet>
+<div *ngIf="loginData==false">
+  <ion-router-outlet ></ion-router-outlet>
+</div>
