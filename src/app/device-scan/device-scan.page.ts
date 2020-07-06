@@ -269,16 +269,25 @@ async connectDevice(){
                          this.api.getRssi(dataRssi).then((resRssi:any)=>{
                            console.log("resRssi====",resRssi)
                            if(resRssi.status){
-                             var valueData = '00' + '46' + resRssi.success[0].rssi + '00'
-                             var value = this.str2abb(valueData)
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
-                               console.log("written rssi",resdata)
-                             })
+                             if(resRssi.success[0].rssi != undefined && resRssi.success[0].rssi!=0 && resRssi.success[0].rssi!='' && resRssi.success[0].rssi != 'undefined'){
+
+                               var valueData = '00' + '46' + resRssi.success[0].rssi + '00'
+                               var value = this.str2abb(valueData)
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written rssi",resdata)
+                               })
+                             }
+                             else{
+                               var value = this.str2abb('00000000')
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written rssi else 1",resdata)
+                               })
+                             }
                            }
                            else{
                              var value = this.str2abb('00000000')
                              this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
-                               console.log("written rssi else",resdata)
+                               console.log("written rssi else 2",resdata)
                              })
                            }
                          }).catch(err=>{
@@ -294,7 +303,7 @@ async connectDevice(){
                          this.api.getOnOffTime(dataOnOff).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
-                             if(reson.success[0].fromTime != null && reson.success[0].toTime != null){
+                             if(reson.success[0].fromTime != null && reson.success[0].toTime != null && reson.success[0].toTime != undefined  && reson.success[0].rssi != 'undefined'){
                                var from = reson.success[0].fromTime.split(':')
                                var to = reson.success[0].toTime.split(':')
                                var valueData = '00' + from[0].toString() + from[1].toString() + to[0].toString() + to[1].toString() + '00'
@@ -329,7 +338,7 @@ async connectDevice(){
                          this.api.getRssi(dataTxPower).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
-                             if(reson.success[0].txPowerHex != null){
+                             if(reson.success[0].txPowerHex != null && reson.success[0].txPowerHex != undefined && reson.success[0].txPowerHex != 0 && reson.success[0].txPowerHex != 'undefined'){
                                var valueData = '0' + '45' + reson.success[0].txPowerHex //00 for 9999 and 0 for 255
                                console.log("valueData===",valueData)
                                var value = this.str2abb(valueData)
@@ -338,14 +347,14 @@ async connectDevice(){
                                })
                              }
                              else{
-                               var value = this.str2abb('000000')
+                               var value = this.str2abb('00000')
                                this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
                                  console.log("written tx power else 1",resdata)
                                })
                              }
                            }
                            else{
-                             var value = this.str2abb('000000')
+                             var value = this.str2abb('00000')
                              this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
                                console.log("written tx power else 2",resdata)
                              })
@@ -362,7 +371,7 @@ async connectDevice(){
                          this.api.getRssi(dataInactivity).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
-                             if(reson.success[0].inactivity != 0){
+                             if(reson.success[0].inactivity != 0 && reson.success[0].inactivity != undefined && reson.success[0].inactivity != 'undefined'){
                               var inactivity = '000'
                                if(reson.success[0].inactivity.toString().length == 1){
                                  inactivity = '00' + reson.success[0].inactivity
@@ -406,7 +415,7 @@ async connectDevice(){
                          this.api.getRssi(dataInactivityStatus).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
-                             if(reson.success[0].inactivityStatus != null){
+                             if(reson.success[0].inactivityStatus != null && reson.success[0].inactivityStatus != undefined && reson.success[0].inactivityStatus != 'undefined'){
                                var valueData = '49' + reson.success[0].inactivityStatus
                                console.log("value inactivity status===",valueData)
                                var value = this.str2abb(valueData)
@@ -438,7 +447,7 @@ async connectDevice(){
                          this.api.getRssi(dataBuffer).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
-                             if(reson.success[0].buffer != null){
+                             if(reson.success[0].buffer != null && reson.success[0].buffer != undefined && reson.success[0].buffer != 'undefined'){
                               var buffer = '00'
                                if(reson.success[0].buffer.toString().length == 1){
                                  buffer = '0' + reson.success[0].buffer

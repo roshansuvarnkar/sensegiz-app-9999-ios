@@ -1,5 +1,5 @@
 
-<div *ngIf="loginData!=false">
+<div *ngIf="loginData!=false && loginData?.role=='admin'">
   <ion-menu side="start"  swipe-gesture="true" contentId="main" auto-hide="false" >
     <ion-header>
       <ion-toolbar color="primary">
@@ -23,6 +23,10 @@
   </ion-menu>
 
   <ion-router-outlet id="main"></ion-router-outlet>
+</div>
+
+<div *ngIf="loginData!=false && loginData?.role=='user'">
+  <ion-router-outlet ></ion-router-outlet>
 </div>
 
 <div *ngIf="loginData==false">
