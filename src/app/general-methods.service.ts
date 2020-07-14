@@ -14,7 +14,7 @@ export class GeneralMethodsService {
   constructor(private toastctrl:ToastController,private network: Network,private api:ApiService) {
     this.locationAutorize()
     let connectSubscription = this.network.onConnect().subscribe(() => {
-      console.log('network connected!');
+      console.log('network connected!=',this.dataBackUp);
       this.networkStatus=true
       if(this.dataBackUp.length>0){
         for(var i=0 ; i<this.dataBackUp.length ; i++){

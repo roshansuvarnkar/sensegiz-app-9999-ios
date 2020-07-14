@@ -34,11 +34,15 @@ const routes: Routes = [
     data:{role:['user']}
   },  {
     path: 'add-ble-mac',
-    loadChildren: () => import('./add-ble-mac/add-ble-mac.module').then( m => m.AddBleMacPageModule)
+    loadChildren: () => import('./add-ble-mac/add-ble-mac.module').then( m => m.AddBleMacPageModule),
+    canActivate: [AuthGuard],
+    data:{role:['admin']}
   },
   {
     path: 'scan-ble-mac',
-    loadChildren: () => import('./scan-ble-mac/scan-ble-mac.module').then( m => m.ScanBleMacPageModule)
+    loadChildren: () => import('./scan-ble-mac/scan-ble-mac.module').then( m => m.ScanBleMacPageModule),
+    canActivate: [AuthGuard],
+    data:{role:['admin']}
   },
 
 ];

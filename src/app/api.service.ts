@@ -127,7 +127,7 @@ export class ApiService {
   }
 
 
-   getRssi(data){
+   getSetting(data){
     const httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };

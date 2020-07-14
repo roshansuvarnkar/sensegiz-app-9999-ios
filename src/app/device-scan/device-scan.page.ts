@@ -13,17 +13,19 @@ declare var cordova;
   styleUrls: ['./device-scan.page.scss'],
 })
 export class DeviceScanPage implements OnInit {
-goHead:boolean = false
-status:boolean=false
-devices:any=[]
-myDate:any = new Date();
-toDate:any
-dataFull:any
-loginData:any
-connectStatus:any
-scanStatus:any='kjrjeg'
-stopStatus:boolean=false
-
+  goHead:boolean = false
+  status:boolean=false
+  devices:any=[]
+  myDate:any = new Date();
+  toDate:any
+  dataFull:any
+  loginData:any
+  connectStatus:any
+  scanStatus:any='Started'
+  stopStatus:boolean=false
+  setTimer:any
+  bleSetting:any = 0
+  locSetting:any = 0
   constructor(private ble:BLE,
     private router:Router,
     private login:LoginStatusService,
@@ -37,6 +39,9 @@ stopStatus:boolean=false
 
 
   ngOnInit() {
+    this.setTimer = setTimeout(() => {
+    },5000);
+
     var status = this.login.LoginStatus()
     if(status){
       this.loginData = this.login.getLoginData()
@@ -71,28 +76,37 @@ stopStatus:boolean=false
   background(){
     this.diagnostic.isBluetoothEnabled().then((resBle:any)=>{
       if(resBle){
+        this.bleSetting = 0
         this.diagnostic.isLocationEnabled().then((resLoc:any)=>{
           if(resLoc){
-            this.startScan()
+            this.locSetting = 0
           }
           else{
-            if(confirm("Turn ON location")){
-                this.diagnostic.switchToLocationSettings()
-                console.log("back from location")
+            if(this.locSetting == 0){
+              if(confirm("Turn ON location")){
+                this.locSetting = 1
+                  this.diagnostic.switchToLocationSettings()
+                  console.log("back from location")
+              }
             }
+
           }
         })
       }
       else{
-        if(confirm("Turn ON bluetooth")){
+        if(this.bleSetting == 0){
+          if(confirm("Turn ON bluetooth")){
+            this.bleSetting = 1
             this.diagnostic.switchToBluetoothSettings()
             console.log("back from bluetooth")
-        }
-        else{
+          }
+          else{
 
+          }
         }
       }
     })
+    this.startScan()
 
   }
 
@@ -109,6 +123,7 @@ startScan(){
     console.log("status  ===",this.stopStatus)
     if(!this.stopStatus){
       this.scanStatus ="Scan started"
+      this.connectStatus = 'Disconnected'
       console.log("scan started")
       this.ble.startScan([]).subscribe(
        device=>this.showDevice(device),
@@ -163,7 +178,7 @@ async autoStart(){
   await this.connectDevice()
   console.log("came from conect")
   this.stopStatus = false
-  this.startScan()
+  this.background()
   return
 }
 
@@ -178,16 +193,32 @@ async connectDevice(){
       if(this.devices[i].hasOwnProperty('name')){
         console.log("came connect 4",this.devices[i].name);
 
-        if((this.devices[i].name.toString().indexOf("FinDR")>-1) && !(this.devices[i].name.toString().indexOf("FinDR00")>-1)){
+        if((this.devices[i].name.toString().indexOf("FinDR")>-1) && !(this.devices[i].name.toString().indexOf("FinDR0000")>-1)){
           console.log("came connect 5",this.devices[i]);
+
+          clearTimeout(this.setTimer)
+
+          this.setTimer =  setTimeout(()=>{
+            this.disconnect(this.devices[i].id)
+            this.background()
+            console.log("came timer 1==",this.setTimer)
+          },41000)
 
           await this.connectBleDevice(this.devices[i]).then((res:any)=>{
              console.log("return from connect")
           })
         }
 
-        else if((this.devices[i].name.toString().indexOf("FiNDr")>-1) && !(this.devices[i].name.toString().indexOf("FiNDr00")>-1)){
+        else if((this.devices[i].name.toString().indexOf("FiNDr")>-1) && !(this.devices[i].name.toString().indexOf("FiNDr0000")>-1)){
           console.log("came connect 6",this.devices[i]);
+
+          clearTimeout(this.setTimer)
+
+          this.setTimer =  setTimeout(()=>{
+            this.disconnect(this.devices[i].id)
+            this.background()
+            console.log("came timer 2==",this.setTimer)
+          },41000)
 
           await this.connectBleDeviceWriteTime(this.devices[i]).then((res:any)=>{
             console.log("return from time connect")
@@ -220,7 +251,7 @@ async connectDevice(){
  async connectBleDevice(resId){
    console.log("camere connect ble")
    return new Promise((resolve,reject)=>{
-     (async () =>{
+     // (async () =>{
        console.log("resId====",resId)
 
        var hexDataAdvertising = this.buf2hex(resId.advertising).toUpperCase()
@@ -236,9 +267,9 @@ async connectDevice(){
          deviceId : findIdAdvertisement
        }
 
-      await this.api.validateMac(data).then((resValid:any)=>{
-        console.log("res  mac 1==",resValid)
-         if(resValid.status){
+      // await this.api.validateMac(data).then((resValid:any)=>{
+      //   console.log("res  mac 1==",resValid)
+      //    if(resValid.status){
            this.ble.connect(resId.id).subscribe((res:any)=>{
              console.log("connected device==",res)
              this.connectStatus = "Connected "+res.name+" device"
@@ -266,7 +297,7 @@ async connectDevice(){
                          var dataRssi = {
                            userId : this.loginData.userId
                          }
-                         this.api.getRssi(dataRssi).then((resRssi:any)=>{
+                         this.api.getSetting(dataRssi).then((resRssi:any)=>{
                            console.log("resRssi====",resRssi)
                            if(resRssi.status){
                              if(resRssi.success[0].rssi != undefined && resRssi.success[0].rssi!=0 && resRssi.success[0].rssi!='' && resRssi.success[0].rssi != 'undefined'){
@@ -306,7 +337,7 @@ async connectDevice(){
                              if(reson.success[0].fromTime != null && reson.success[0].toTime != null && reson.success[0].toTime != undefined  && reson.success[0].rssi != 'undefined'){
                                var from = reson.success[0].fromTime.split(':')
                                var to = reson.success[0].toTime.split(':')
-                               var valueData = '00' + from[0].toString() + from[1].toString() + to[0].toString() + to[1].toString() + '00'
+                               var valueData = '00' + to[0].toString() + to[1].toString() + from[0].toString() + from[1].toString() + '00'
                                console.log("valueData===",valueData)
                                var value = this.str2abb(valueData)
                                this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
@@ -335,7 +366,7 @@ async connectDevice(){
                          var dataTxPower = {
                            userId : this.loginData.userId
                          }
-                         this.api.getRssi(dataTxPower).then((reson:any)=>{
+                         this.api.getSetting(dataTxPower).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
                              if(reson.success[0].txPowerHex != null && reson.success[0].txPowerHex != undefined && reson.success[0].txPowerHex != 0 && reson.success[0].txPowerHex != 'undefined'){
@@ -368,7 +399,7 @@ async connectDevice(){
                          var dataInactivity = {
                            userId : this.loginData.userId
                          }
-                         this.api.getRssi(dataInactivity).then((reson:any)=>{
+                         this.api.getSetting(dataInactivity).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
                              if(reson.success[0].inactivity != 0 && reson.success[0].inactivity != undefined && reson.success[0].inactivity != 'undefined'){
@@ -412,7 +443,7 @@ async connectDevice(){
                          var dataInactivityStatus = {
                            userId : this.loginData.userId
                          }
-                         this.api.getRssi(dataInactivityStatus).then((reson:any)=>{
+                         this.api.getSetting(dataInactivityStatus).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
                              if(reson.success[0].inactivityStatus != null && reson.success[0].inactivityStatus != undefined && reson.success[0].inactivityStatus != 'undefined'){
@@ -444,7 +475,7 @@ async connectDevice(){
                          var dataBuffer = {
                            userId : this.loginData.userId
                          }
-                         this.api.getRssi(dataBuffer).then((reson:any)=>{
+                         this.api.getSetting(dataBuffer).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
                              if(reson.success[0].buffer != null && reson.success[0].buffer != undefined && reson.success[0].buffer != 'undefined'){
@@ -480,6 +511,179 @@ async connectDevice(){
                            console.log("err==",err)
                          })
                        }
+/*
+                       else if(hexData == "0077777777000000"){
+                         var dataScanningInterval = {
+                           userId : this.loginData.userId
+                         }
+                         this.api.getSetting(dataScanningInterval).then((reson:any)=>{
+                           console.log("reson====",reson)
+                           if(reson.status){
+                             if(reson.success[0].scanInterval != null && reson.success[0].scanInterval != undefined && reson.success[0].scanInterval != 'undefined'){
+                                var scanInterval = '000'
+                                if(reson.success[0].scanInterval.toString().length == 1){
+                                  scanInterval = '00' + reson.success[0].scanInterval
+                                }
+                                else if(reson.success[0].scanInterval.toString().length == 2){
+                                  scanInterval = '0' + reson.success[0].scanInterval
+                                }
+                                else if(reson.success[0].scanInterval.toString().length == 3){
+                                  scanInterval = reson.success[0].scanInterval
+                                }
+
+                               var valueData = '00043' + scanInterval + '000'
+                               console.log("value scanInterval ===",valueData)
+                               var value = this.str2abb(valueData)
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written scanInterval",resdata)
+                               })
+                             }
+                             else{
+                               var value = this.str2abb('00000000000')
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written scanInterval else 1",resdata)
+                               })
+                             }
+                           }
+                           else{
+                             var value = this.str2abb('00000000000')
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               console.log("written scanInterval else 2",resdata)
+                             })
+                           }
+                         }).catch(err=>{
+                           console.log("err==",err)
+                         })
+                       }
+
+                       else if(hexData == "0088888888000000"){
+                         var dataBuzzerConf = {
+                           userId : this.loginData.userId
+                         }
+                         this.api.getSetting(dataBuzzerConf).then((reson:any)=>{
+                           console.log("reson====",reson)
+                           if(reson.status){
+                             if(reson.success[0].buzzerConfig != null && reson.success[0].buzzerConfig != undefined && reson.success[0].buzzerConfig != 'undefined'){
+
+                               var valueData = '0000044' + reson.success[0].buzzerConfig + '00000'
+                               console.log("value buzzer conf===",valueData)
+                               var value = this.str2abb(valueData)
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written buzzer",resdata)
+                               })
+                             }
+                             else{
+                               var value = this.str2abb('0000000000000')
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written buzzer else 1",resdata)
+                               })
+                             }
+                           }
+                           else{
+                             var value = this.str2abb('0000000000000')
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               console.log("written buzzer else 2",resdata)
+                             })
+                           }
+                         }).catch(err=>{
+                           console.log("err==",err)
+                         })
+                       }
+
+
+                       else if(hexData == "0099999999000000"){
+                         var dataDurationThreshold = {
+                           userId : this.loginData.userId
+                         }
+                         this.api.getSetting(dataDurationThreshold).then((reson:any)=>{
+                           console.log("reson====",reson)
+                           if(reson.status){
+                             if(reson.success[0].durationThreshold != null && reson.success[0].durationThreshold != undefined && reson.success[0].durationThreshold != 'undefined'){
+                               var durationThreshold = reson.success[0].durationThreshold == 1 ? 121 : parseInt(reson.success[0].durationThreshold)/5
+
+                               if(reson.success[0].durationThreshold.toString().length == 1){
+                                 durationThreshold = '00' + reson.success[0].durationThreshold
+                               }
+                               else if(reson.success[0].durationThreshold.toString().length == 2){
+                                 durationThreshold = '0' + reson.success[0].durationThreshold
+                               }
+                               else if(reson.success[0].durationThreshold.toString().length == 3){
+                                 durationThreshold = reson.success[0].durationThreshold
+                               }
+
+                               var valueData = '0000051' + durationThreshold + '00000'
+                               console.log("value durationThreshold===",valueData)
+                               var value = this.str2abb(valueData)
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written buzzer",resdata)
+                               })
+                             }
+                             else{
+                               var value = this.str2abb('000000000000000')
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written durationThreshold else 1",resdata)
+                               })
+                             }
+                           }
+                           else{
+                             var value = this.str2abb('000000000000000')
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               console.log("written durationThreshold else 2",resdata)
+                             })
+                           }
+                         }).catch(err=>{
+                           console.log("err==",err)
+                         })
+                       }
+
+
+
+
+                       else if(hexData == "00AAAAAAAA000000"){
+                         var databuzzerTime= {
+                           userId : this.loginData.userId
+                         }
+                         this.api.getSetting(databuzzerTime).then((reson:any)=>{
+                           console.log("reson====",reson)
+                           if(reson.status){
+                             if(reson.success[0].buzzerTime != null && reson.success[0].buzzerTime != undefined && reson.success[0].buzzerTime != 'undefined'){
+                               var buzzerTime = reson.success[0].buzzerTime == 1 ? 121 : parseInt(reson.success[0].buzzerTime)/5
+
+                               if(reson.success[0].buzzerTime.toString().length == 1){
+                                 buzzerTime = '00' + reson.success[0].buzzerTime
+                               }
+                               else if(reson.success[0].buzzerTime.toString().length == 2){
+                                 buzzerTime = '0' + reson.success[0].buzzerTime
+                               }
+                               else if(reson.success[0].buzzerTime.toString().length == 3){
+                                 buzzerTime = reson.success[0].buzzerTime
+                               }
+
+                               var valueData = '00052' + buzzerTime
+                               console.log("value buzzerTime===",valueData)
+                               var value = this.str2abb(valueData)
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written buzzerTime",resdata)
+                               })
+                             }
+                             else{
+                               var value = this.str2abb('0000000')
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                                 console.log("written buzzerTime else 1",resdata)
+                               })
+                             }
+                           }
+                           else{
+                             var value = this.str2abb('0000000')
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               console.log("written buzzerTime else 2",resdata)
+                             })
+                           }
+                         }).catch(err=>{
+                           console.log("err==",err)
+                         })
+                       }*/
+
                        else if(hexData == "0077777777000000"){
                          this.ble.stopNotification(resId.id,res.characteristics[16].service,res.characteristics[16].characteristic).then(stopNot=>{
                            this.disconnect(resId.id).then((disres:any)=>{
@@ -495,20 +699,20 @@ async connectDevice(){
                          this.dataFull = {
                            data: '0000000000'+ userId + hexData
                          }
+                         var a0
+                         inc = inc + 1
+                         if(inc.toString().length==1){
+                           a0 = 'A00' + inc
+                         }
+                         else{
+                           a0 = 'A0' + inc
+                         }
                          var networkStatus = this.general.checkNetwork()
                          if(networkStatus!='none'){
                            console.log("if network present")
                            this.api.SendData(this.dataFull).then((apis:any)=>{
                              if(apis.status){
-                               var a0
-                               inc = inc + 1
-                               if(inc.toString().length==1){
-                                 a0 = 'A00' + inc
-                               }
-                               else{
-                                 a0 = 'A0' + inc
-                               }
-                               console.log("ao====",a0)
+                               console.log("ao if====",a0)
                                this.write(resId.id,res,a0).then((resWritenot:any)=>{
                                  console.log("second write for data===",resWritenot)
                                })
@@ -517,13 +721,22 @@ async connectDevice(){
 
                              }
                            }).catch(err=>{
-                             this.general.dataBackUp.push(this.dataFull)
                              console.log("err==",err)
+                             console.log("ao catch====",a0)
+                             this.general.dataBackUp.push(this.dataFull)
+                             this.write(resId.id,res,a0).then((resWritenot:any)=>{
+                               console.log("second write for data===",resWritenot)
+                             })
                            })
                          }
                          else{
-                           this.general.dataBackUp.push(this.dataFull)
+                           console.log("ao else====",a0)
                            console.log("else network absent");
+                           this.general.dataBackUp.push(this.dataFull)
+                           this.write(resId.id,res,a0).then((resWritenot:any)=>{
+                             console.log("second write for data===",resWritenot)
+                           })
+
                          }
                        }
                      })
@@ -543,13 +756,13 @@ async connectDevice(){
             console.log("cannot connect ble")
             resolve(false)
           })
-         }
-         else{
-           console.log("res  mac1 not valid")
-           resolve(false)
-         }
-       })
-     })()
+       //   }
+       //   else{
+       //     console.log("res  mac1 not valid")
+       //     resolve(false)
+       //   }
+       // })
+     // })()
    })
 }
 
@@ -559,7 +772,7 @@ async connectDevice(){
    console.log("camere connect ble write time")
    return new Promise((resolve,reject)=>{
 
-     (async () =>{
+     // (async () =>{
        console.log("resId====",resId)
        var hexDataAdvertising = this.buf2hex(resId.advertising).toUpperCase()
        console.log("hexDataAdvertising1===",hexDataAdvertising)
@@ -576,10 +789,10 @@ async connectDevice(){
          deviceId : findIdAdvertisement
        }
 
-       await this.api.validateMac(data).then((resValid:any)=>{
-         console.log("res  mac 2==",resValid)
-
-         if(resValid.status){
+       // await this.api.validateMac(data).then((resValid:any)=>{
+       //   console.log("res  mac 2==",resValid)
+       //
+       //   if(resValid.status){
            this.ble.connect(resId.id).subscribe((res:any)=>{
              console.log("connected time device==",res)
              this.connectStatus = "Connected "+res.name+" device"
@@ -623,13 +836,13 @@ async connectDevice(){
             console.log("cannot connect ble time")
             resolve(false)
           })
-         }
-         else{
-           console.log("res  mac2 not valid")
-           resolve(false)
-         }
-       })
-     })()
+     //     }
+     //     else{
+     //       console.log("res  mac2 not valid")
+     //       resolve(false)
+     //     }
+     //   })
+     // })()
 
 
    })

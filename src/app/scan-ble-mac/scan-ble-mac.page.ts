@@ -25,30 +25,31 @@ export class ScanBleMacPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.diagnostic.isBluetoothEnabled().then((resBle:any)=>{
-      if(resBle){
-        this.diagnostic.isLocationEnabled().then((resLoc:any)=>{
-          if(resLoc){
-            this.scan()
-          }
-          else{
-            if(confirm("Turn ON location")){
-                this.diagnostic.switchToLocationSettings()
-                console.log("back from location")
-            }
-          }
-        })
-      }
-      else{
-        if(confirm("Turn ON bluetooth")){
-            this.diagnostic.switchToBluetoothSettings()
-            console.log("back from bluetooth")
-        }
-        else{
+    this.scan()
 
-        }
-      }
-    })
+    // this.diagnostic.isBluetoothEnabled().then((resBle:any)=>{
+    //   if(resBle){
+    //     this.diagnostic.isLocationEnabled().then((resLoc:any)=>{
+    //       if(resLoc){
+    //       }
+    //       else{
+    //         if(confirm("Turn ON location")){
+    //             this.diagnostic.switchToLocationSettings()
+    //             console.log("back from location")
+    //         }
+    //       }
+    //     })
+    //   }
+    //   else{
+    //     if(confirm("Turn ON bluetooth")){
+    //         this.diagnostic.switchToBluetoothSettings()
+    //         console.log("back from bluetooth")
+    //     }
+    //     else{
+    //
+    //     }
+    //   }
+    // })
   }
 
   scan() {
