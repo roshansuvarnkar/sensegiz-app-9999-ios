@@ -78,6 +78,8 @@ export class ScanBleMacPage implements OnInit {
 
 
   doRefresh(event) {
+    this.scan()
+    
       console.log('Begin async operation');
       setTimeout(() => {
         console.log('Async operation has ended');
@@ -85,7 +87,6 @@ export class ScanBleMacPage implements OnInit {
           if(resBle){
             this.diagnostic.isLocationEnabled().then((resLoc:any)=>{
               if(resLoc){
-                this.scan()
               }
               else{
                 if(confirm("Turn ON location")){

@@ -41,11 +41,13 @@ export class AddBleMacPage implements OnInit {
     this.route.queryParams.subscribe(params => {
         this.deviceData = JSON.parse(params.record) ;
         console.log("records=",this.deviceData)
+        this.connect(this.deviceData.id)
+
         this.diagnostic.isBluetoothEnabled().then((resBle:any)=>{
           if(resBle){
             this.diagnostic.isLocationEnabled().then((resLoc:any)=>{
               if(resLoc){
-                this.connect(this.deviceData.id)
+                //this.connect(this.deviceData.id)
               }
               else{
                 if(confirm("Turn ON location")){
@@ -72,18 +74,36 @@ export class AddBleMacPage implements OnInit {
     this.disConnect(this.addBle.id)
   }
 
-
+// 16=>no time   17=>time but no data 18=>data
   connect(id){
     this.ble.connect(id).subscribe((res:any)=>{
       console.log("connected==",res)
+      console.log("stob advertising===",this.bytesToString(res.advertising));
+      console.log("stob name===",this.bytesToString(res.name));
+
       this.addBle = res
       this.status = true
       this.changeDetectorRef.detectChanges();
     },err=>{
       console.log("cannot connect",err)
       this.status = false
+      this.disConnect(this.addBle.id)
       this.changeDetectorRef.detectChanges();
     })
+  }
+
+
+  stringToBytes(string) {
+   var array = new Uint8Array(string.length);
+   for (var i = 0, l = string.length; i < l; i++) {
+       array[i] = string.charCodeAt(i);
+    }
+    return array.buffer;
+  }
+
+  // ASCII only
+  bytesToString(buffer) {
+      return String.fromCharCode.apply(null, new Uint8Array(buffer));
   }
 
 

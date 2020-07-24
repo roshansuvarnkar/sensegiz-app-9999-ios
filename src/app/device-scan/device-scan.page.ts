@@ -26,6 +26,8 @@ export class DeviceScanPage implements OnInit {
   setTimer:any
   bleSetting:any = 0
   locSetting:any = 0
+  setTimerConnection:any
+  connectTimmer:any=1
   constructor(private ble:BLE,
     private router:Router,
     private login:LoginStatusService,
@@ -40,6 +42,8 @@ export class DeviceScanPage implements OnInit {
 
   ngOnInit() {
     this.setTimer = setTimeout(() => {
+    },5000);
+    this.setTimerConnection = setTimeout(() => {
     },5000);
 
     var status = this.login.LoginStatus()
@@ -202,7 +206,7 @@ async connectDevice(){
             this.disconnect(this.devices[i].id)
             this.background()
             console.log("came timer 1==",this.setTimer)
-          },41000)
+          },80000)
 
           await this.connectBleDevice(this.devices[i]).then((res:any)=>{
              console.log("return from connect")
@@ -218,7 +222,7 @@ async connectDevice(){
             this.disconnect(this.devices[i].id)
             this.background()
             console.log("came timer 2==",this.setTimer)
-          },41000)
+          },80000)
 
           await this.connectBleDeviceWriteTime(this.devices[i]).then((res:any)=>{
             console.log("return from time connect")
@@ -266,6 +270,13 @@ async connectDevice(){
          macId : resId.id,
          deviceId : findIdAdvertisement
        }
+       this.setTimerConnection =  setTimeout(()=>{
+         if(this.connectTimmer==1){
+           this.disconnect(resId.id)
+           this.background()
+           console.log("came timer 2==",this.setTimer)
+         }
+       },6000)
 
       // await this.api.validateMac(data).then((resValid:any)=>{
       //   console.log("res  mac 1==",resValid)
@@ -276,19 +287,19 @@ async connectDevice(){
              this.changeDetectorRef.detectChanges();
                var inc = 0
                if(res.characteristics.length>0){
-                 if(res.characteristics[16].service == 'fff0' && res.characteristics[16].characteristic=='fff4'){
-                   console.log("char up if",res.characteristics[16]);
+                 if(res.characteristics[8].service == 'fff0' && res.characteristics[8].characteristic=='fff4'){
+                   console.log("char up if",res.characteristics[8]);
 
                    var value = this.str2abb('A0')
                    this.write(resId.id,res,'A000').then(resWrite=>{
                      console.log("start")
-                     this.ble.startNotification(resId.id,res.characteristics[16].service,res.characteristics[16].characteristic).subscribe((data:any)=>{
+                     this.ble.startNotification(resId.id,res.characteristics[8].service,res.characteristics[8].characteristic).subscribe((data:any)=>{
                        var hexData = this.buf2hex(data).toUpperCase()
                        console.log("started notified",hexData)
-
+                       this.connectTimmer = 0
                        if(hexData == "0000000000000000"){
                          var value = this.str2abb(this.general.timeBle())
-                         this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                         this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                            console.log("written time on data 000",resdata)
                          })
                        }
@@ -304,20 +315,20 @@ async connectDevice(){
 
                                var valueData = '00' + '46' + resRssi.success[0].rssi + '00'
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written rssi",resdata)
                                })
                              }
                              else{
                                var value = this.str2abb('00000000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written rssi else 1",resdata)
                                })
                              }
                            }
                            else{
                              var value = this.str2abb('00000000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written rssi else 2",resdata)
                              })
                            }
@@ -340,20 +351,20 @@ async connectDevice(){
                                var valueData = '00' + to[0].toString() + to[1].toString() + from[0].toString() + from[1].toString() + '00'
                                console.log("valueData===",valueData)
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written on off time",resdata)
                                })
                              }
                              else{
                                var value = this.str2abb('000000000000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written on off time else 1",resdata)
                                })
                              }
                            }
                            else{
                              var value = this.str2abb('000000000000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written on off time else 2",resdata)
                              })
                            }
@@ -373,20 +384,20 @@ async connectDevice(){
                                var valueData = '0' + '45' + reson.success[0].txPowerHex //00 for 9999 and 0 for 255
                                console.log("valueData===",valueData)
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written tx power",resdata)
                                })
                              }
                              else{
                                var value = this.str2abb('00000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written tx power else 1",resdata)
                                })
                              }
                            }
                            else{
                              var value = this.str2abb('00000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written tx power else 2",resdata)
                              })
                            }
@@ -417,20 +428,20 @@ async connectDevice(){
                                var valueData = '0050' + inactivity
                                console.log("value inactivity===",valueData)
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written inactivity",resdata)
                                })
                              }
                              else{
                                var value = this.str2abb('0000000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written inactivity else 1",resdata)
                                })
                              }
                            }
                            else{
                              var value = this.str2abb('0000000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written inactivity else 2",resdata)
                              })
                            }
@@ -450,20 +461,20 @@ async connectDevice(){
                                var valueData = '49' + reson.success[0].inactivityStatus
                                console.log("value inactivity status===",valueData)
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written inactivity status",resdata)
                                })
                              }
                              else{
                                var value = this.str2abb('000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written inactivity status else 1",resdata)
                                })
                              }
                            }
                            else{
                              var value = this.str2abb('000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written inactivity enable else 2",resdata)
                              })
                            }
@@ -490,20 +501,20 @@ async connectDevice(){
                                var valueData = '0048' + buffer + '000'
                                console.log("value buffer===",valueData)
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written buffer",resdata)
                                })
                              }
                              else{
                                var value = this.str2abb('000000000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written buffer else 1",resdata)
                                })
                              }
                            }
                            else{
                              var value = this.str2abb('000000000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written buffer else 2",resdata)
                              })
                            }
@@ -511,7 +522,7 @@ async connectDevice(){
                            console.log("err==",err)
                          })
                        }
-/*
+
                        else if(hexData == "0077777777000000"){
                          var dataScanningInterval = {
                            userId : this.loginData.userId
@@ -519,35 +530,35 @@ async connectDevice(){
                          this.api.getSetting(dataScanningInterval).then((reson:any)=>{
                            console.log("reson====",reson)
                            if(reson.status){
-                             if(reson.success[0].scanInterval != null && reson.success[0].scanInterval != undefined && reson.success[0].scanInterval != 'undefined'){
+                             if(reson.success[0].scanningInterval != null && reson.success[0].scanningInterval != undefined && reson.success[0].scanningInterval != 'undefined'){
                                 var scanInterval = '000'
-                                if(reson.success[0].scanInterval.toString().length == 1){
-                                  scanInterval = '00' + reson.success[0].scanInterval
+                                if(reson.success[0].scanningInterval.toString().length == 1){
+                                  scanInterval = '00' + reson.success[0].scanningInterval
                                 }
-                                else if(reson.success[0].scanInterval.toString().length == 2){
-                                  scanInterval = '0' + reson.success[0].scanInterval
+                                else if(reson.success[0].scanningInterval.toString().length == 2){
+                                  scanInterval = '0' + reson.success[0].scanningInterval
                                 }
-                                else if(reson.success[0].scanInterval.toString().length == 3){
-                                  scanInterval = reson.success[0].scanInterval
+                                else if(reson.success[0].scanningInterval.toString().length == 3){
+                                  scanInterval = reson.success[0].scanningInterval
                                 }
 
                                var valueData = '00043' + scanInterval + '000'
                                console.log("value scanInterval ===",valueData)
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written scanInterval",resdata)
                                })
                              }
                              else{
                                var value = this.str2abb('00000000000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written scanInterval else 1",resdata)
                                })
                              }
                            }
                            else{
                              var value = this.str2abb('00000000000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written scanInterval else 2",resdata)
                              })
                            }
@@ -568,20 +579,20 @@ async connectDevice(){
                                var valueData = '0000044' + reson.success[0].buzzerConfig + '00000'
                                console.log("value buzzer conf===",valueData)
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written buzzer",resdata)
                                })
                              }
                              else{
                                var value = this.str2abb('0000000000000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written buzzer else 1",resdata)
                                })
                              }
                            }
                            else{
                              var value = this.str2abb('0000000000000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written buzzer else 2",resdata)
                              })
                            }
@@ -599,7 +610,7 @@ async connectDevice(){
                            console.log("reson====",reson)
                            if(reson.status){
                              if(reson.success[0].durationThreshold != null && reson.success[0].durationThreshold != undefined && reson.success[0].durationThreshold != 'undefined'){
-                               var durationThreshold = reson.success[0].durationThreshold == 1 ? 121 : parseInt(reson.success[0].durationThreshold)/5
+                               var durationThreshold = reson.success[0].durationThreshold == '1' ? '121' : (parseInt(reson.success[0].durationThreshold)/5).toString()
 
                                if(reson.success[0].durationThreshold.toString().length == 1){
                                  durationThreshold = '00' + reson.success[0].durationThreshold
@@ -611,23 +622,23 @@ async connectDevice(){
                                  durationThreshold = reson.success[0].durationThreshold
                                }
 
-                               var valueData = '0000051' + durationThreshold + '00000'
+                               var valueData = '0000051' + durationThreshold + '0000'
                                console.log("value durationThreshold===",valueData)
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written buzzer",resdata)
                                })
                              }
                              else{
-                               var value = this.str2abb('000000000000000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               var value = this.str2abb('00000000000000')
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written durationThreshold else 1",resdata)
                                })
                              }
                            }
                            else{
-                             var value = this.str2abb('000000000000000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             var value = this.str2abb('00000000000000')
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written durationThreshold else 2",resdata)
                              })
                            }
@@ -647,7 +658,7 @@ async connectDevice(){
                            console.log("reson====",reson)
                            if(reson.status){
                              if(reson.success[0].buzzerTime != null && reson.success[0].buzzerTime != undefined && reson.success[0].buzzerTime != 'undefined'){
-                               var buzzerTime = reson.success[0].buzzerTime == 1 ? 121 : parseInt(reson.success[0].buzzerTime)/5
+                               var buzzerTime = reson.success[0].buzzerTime == '1' ? '121' : (parseInt(reson.success[0].buzzerTime)/5).toString()
 
                                if(reson.success[0].buzzerTime.toString().length == 1){
                                  buzzerTime = '00' + reson.success[0].buzzerTime
@@ -659,33 +670,34 @@ async connectDevice(){
                                  buzzerTime = reson.success[0].buzzerTime
                                }
 
-                               var valueData = '00052' + buzzerTime
+                               var valueData = '0052' + buzzerTime
                                console.log("value buzzerTime===",valueData)
                                var value = this.str2abb(valueData)
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written buzzerTime",resdata)
                                })
                              }
                              else{
                                var value = this.str2abb('0000000')
-                               this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                               this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                  console.log("written buzzerTime else 1",resdata)
                                })
                              }
                            }
                            else{
                              var value = this.str2abb('0000000')
-                             this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                             this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                                console.log("written buzzerTime else 2",resdata)
                              })
                            }
                          }).catch(err=>{
                            console.log("err==",err)
                          })
-                       }*/
+                       }
 
-                       else if(hexData == "0077777777000000"){
-                         this.ble.stopNotification(resId.id,res.characteristics[16].service,res.characteristics[16].characteristic).then(stopNot=>{
+
+                       else if(hexData == "00BBBBBBBB000000"){
+                         this.ble.stopNotification(resId.id,res.characteristics[8].service,res.characteristics[8].characteristic).then(stopNot=>{
                            this.disconnect(resId.id).then((disres:any)=>{
                              resolve(true)
                            }).catch(err=>{
@@ -789,6 +801,14 @@ async connectDevice(){
          deviceId : findIdAdvertisement
        }
 
+       this.setTimerConnection =  setTimeout(()=>{
+         if(this.connectTimmer==1){
+           this.disconnect(resId.id)
+           this.background()
+           console.log("came timer 2==",this.setTimer)
+         }
+       },6000)
+
        // await this.api.validateMac(data).then((resValid:any)=>{
        //   console.log("res  mac 2==",resValid)
        //
@@ -798,20 +818,21 @@ async connectDevice(){
              this.connectStatus = "Connected "+res.name+" device"
              this.changeDetectorRef.detectChanges();
              if(res.characteristics.length>0){
-               console.log("char===",res.characteristics[14])
-               if(res.characteristics[14].service == 'fff0' && res.characteristics[14].characteristic=='fff1'){
-                 console.log("char entered if===",res.characteristics[14])
+               console.log("char===",res.characteristics[5])
+               if(res.characteristics[5].service == 'fff0' && res.characteristics[5].characteristic=='fff1'){
+                 console.log("char entered if===",res.characteristics[5])
                  var value = this.str2abb(this.general.timeBle())
 
-                 this.ble.writeWithoutResponse(resId.id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+                 this.ble.writeWithoutResponse(resId.id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
                    console.log("written time",resdata)
-                   if(res.characteristics[16].service == 'fff0' && res.characteristics[16].characteristic=='fff4'){
-                     this.ble.startNotification(resId.id,res.characteristics[16].service,res.characteristics[16].characteristic).subscribe((data:any)=>{
+                   if(res.characteristics[8].service == 'fff0' && res.characteristics[8].characteristic=='fff4'){
+                     this.ble.startNotification(resId.id,res.characteristics[8].service,res.characteristics[8].characteristic).subscribe((data:any)=>{
                        var hexData = this.buf2hex(data).toUpperCase()
                        console.log("started notified time",hexData)
+                       this.connectTimmer = 0
                        if(hexData == "0011111111000000"){
                          console.log("end notify time");
-                         this.ble.stopNotification(resId.id,res.characteristics[16].service,res.characteristics[16].characteristic).then(stopNot=>{
+                         this.ble.stopNotification(resId.id,res.characteristics[8].service,res.characteristics[8].characteristic).then(stopNot=>{
                            this.disconnect(resId.id).then((disres:any)=>{
                              resolve(true)
                            }).catch(err=>{
@@ -854,11 +875,11 @@ write(id,res,data){
   return new Promise((resolve,reject)=>{
     // for(var i=0 ; i<res.characteristics.length ; i++){
     if(res.characteristics.length>0){
-      console.log("char===",res.characteristics[14])
-      if(res.characteristics[14].service == 'fff0' && res.characteristics[14].characteristic=='fff1'){
-        console.log("char entered if===",res.characteristics[14])
+      console.log("char===",res.characteristics[5])
+      if(res.characteristics[5].service == 'fff0' && res.characteristics[5].characteristic=='fff1'){
+        console.log("char entered if===",res.characteristics[5])
         var value = this.str2abb(data)
-        this.ble.writeWithoutResponse(id,res.characteristics[14].service,res.characteristics[14].characteristic,value).then((resdata:any)=>{
+        this.ble.writeWithoutResponse(id,res.characteristics[5].service,res.characteristics[5].characteristic,value).then((resdata:any)=>{
           console.log("written data",resdata)
           resolve(true)
         })
