@@ -79,7 +79,7 @@ export class ScanBleMacPage implements OnInit {
 
   doRefresh(event) {
     this.scan()
-    
+
       console.log('Begin async operation');
       setTimeout(() => {
         console.log('Async operation has ended');
@@ -108,6 +108,11 @@ export class ScanBleMacPage implements OnInit {
         })
         event.target.complete();
       }, 1000);
+  }
+
+
+  hex2dec(str){
+    return parseInt(str, 16)
   }
 
 }

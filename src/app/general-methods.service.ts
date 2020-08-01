@@ -10,33 +10,22 @@ export class GeneralMethodsService {
   networkStatus:boolean
   myDate:any
   toDate:any
-  dataBackUp:any=[]
   constructor(private toastctrl:ToastController,private network: Network,private api:ApiService) {
-    this.locationAutorize()
+    setInterval(()=>{
+      this.dataSyncOnNetwork()
+    },10000)
     let connectSubscription = this.network.onConnect().subscribe(() => {
-      console.log('network connected!=',this.dataBackUp);
+      console.log('network connected!=');
       this.networkStatus=true
-      if(this.dataBackUp.length>0){
-        for(var i=0 ; i<this.dataBackUp.length ; i++){
-          this.api.SendData(this.dataBackUp[i]).then((apis:any)=>{
-            if(apis.status){
-              console.log("backup data sync",this.dataBackUp[i])
-              this.dataBackUp.splice(i, 1);
-            }
-          })
-        }
-      }
+      this.dataSyncOnNetwork()
     });
     let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
       console.log('network disconnected!');
-
       this.networkStatus=false
     });
   }
 
-
   async toast(msg){
-
   	const toast = await this.toastctrl.create({
       message: msg,
       position: 'bottom',
@@ -45,13 +34,10 @@ export class GeneralMethodsService {
   		setTimeout(function(){ toast.dismiss() }, 3000);
   }
 
-
   checkNetwork(){
     console.log("connection type===",this.network.type);
     return this.network.type;
   }
-
-
 
   timeBle(){
     this.myDate = new Date();
@@ -71,20 +57,58 @@ export class GeneralMethodsService {
     return this.myDate
   }
 
-
-
-  locationAutorize(){
-    // this.diagnostic.isLocationAuthorized().then((res:any)=>{
-    //   console.log("res location authorize",res);
-    //
-    //   if(res == 'GRANTED'){
-    //
-    //   }
-    //   else{
-    //
-    //   }
-    // })
+  dataBackUp(key='backUpdataSensegiz',value){
+    var obj = this.getObject(key)
+    console.log("value==",value,"obj==",obj)
+    if(obj!=null){
+      obj.push(value.data)
+      console.log("value 1==",value.data,"obj==",obj)
+    }
+    else{
+      obj=[]
+      obj[0] = value.data
+      console.log("value 2==",value.data,"obj==",obj)
+    }
+    this.setObject(key,obj)
   }
 
+  getObject(key='backUpdataSensegiz'){
+    return JSON.parse(localStorage.getItem(key))
+  }
+
+  setObject(key='backUpdataSensegiz',obj){
+    localStorage.setItem(key,JSON.stringify(obj))
+  }
+
+  async dataSyncOnNetwork(){
+    var network = this.checkNetwork()
+    if(network != 'none'){
+      var obj = this.getObject('backUpdataSensegiz')
+      console.log("obj sync==",obj);
+      if(obj != null){
+        if(obj.length>0){
+          for(var i = 0 ; i<obj.length ; i++){
+            console.log("obj[i]==",obj[i],"obj===",obj);
+            var data = {
+              data : obj[i]
+            }
+            await this.api.SendData(data).then((apis:any)=>{
+              if(apis.status){
+                console.log("backup data sync",obj[i])
+                obj.splice(i, 1);
+                this.setObject('backUpdataSensegiz',obj)
+              }
+            }).catch(err=>{
+              console.log("back up error",err)
+            })
+          }
+        }
+      }
+    }
+    else{
+      console.log("no network");
+
+    }
+  }
 
 }

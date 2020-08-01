@@ -20,7 +20,7 @@
     <ion-list>
       <ion-item *ngFor="let a of devices;let i=index" (click)="clickDevice(a)">
         <ion-label >
-          {{a.name}}
+          FiNDR{{hex2dec(a.advertising?.kCBAdvDataServiceUUIDs[1])}}
         </ion-label>
         <ion-label >
           {{a.id}}
